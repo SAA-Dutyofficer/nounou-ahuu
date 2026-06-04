@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Fiona & Julian — Wedding Planner</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<title>NounouAhuu 🍼</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyDYJCLwZTE2XCHF73dJC2WHJYthjvdULfY",
     authDomain: "fiona-julian.firebaseapp.com",
@@ -25,1587 +24,464 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   window._db = db;
-  window._dbRef = ref;
-  window._dbSet = set;
-  window._dbGet = get;
-  window._dbOnValue = onValue;
-  window._dbPush = push;
-  window._dbRemove = remove;
-  window._dbUpdate = update;
-  window._firebaseReady = true;
-  document.dispatchEvent(new Event('firebase-ready'));
+  window._ref = ref;
+  window._set = set;
+  window._onValue = onValue;
+  window._fbReady = true;
+  document.dispatchEvent(new Event('fb-ready'));
 </script>
 
 <style>
-/* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --cream:#faf7f2;
-  --warm:#f0e8db;
-  --gold:#b8965a;
-  --gold-light:#d4b07a;
-  --deep:#2c1f14;
-  --sage:#7a9e7e;
-  --blush:#e8c5b8;
-  --text:#3a2e24;
-  --muted:#8a7a6a;
-  --white:#ffffff;
-  --shadow:0 4px 24px rgba(44,31,20,0.10);
+  --cream:#FDF8F2;
+  --warm:#FFFCF8;
+  --sage:#7A9E8A;
+  --sage-light:#EDF4F0;
+  --sage-dark:#4A7060;
+  --blush:#FDF0EC;
+  --blush-dark:#C47A65;
+  --text:#2C2420;
+  --text-mid:#6B5E58;
+  --text-light:#A89890;
+  --border:#EDE4DC;
+  --shadow:0 2px 20px rgba(44,36,32,0.07);
   --radius:16px;
 }
 html{scroll-behavior:smooth;}
 body{
-  font-family:'Jost',sans-serif;
+  font-family:'DM Sans',sans-serif;
   background:var(--cream);
   color:var(--text);
   min-height:100vh;
-  overflow-x:hidden;
+  padding-bottom:4rem;
 }
 
-/* ===== PIN SCREEN ===== */
-#pin-screen{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--deep);
-  display:flex;flex-direction:column;align-items:center;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:env(safe-area-inset-top,1rem) 1rem env(safe-area-inset-bottom,2rem);
-  transition:opacity 0.6s ease, visibility 0.6s;
-}
-#pin-screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
-.pin-inner{
-  display:flex;flex-direction:column;align-items:center;
-  gap:1rem;width:100%;max-width:320px;
-  margin:auto;padding:1.5rem 0;
-}
-.pin-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.6rem,7vw,3rem);
-  color:var(--cream);font-style:italic;
-  text-align:center;line-height:1.2;
-}
-.pin-subtitle{color:var(--gold-light);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
-.pin-dots{display:flex;gap:0.8rem;margin:0.2rem 0;}
-.pin-dot{
-  width:13px;height:13px;border-radius:50%;
-  border:2px solid var(--gold);background:transparent;transition:background 0.2s;
-}
-.pin-dot.filled{background:var(--gold);}
-.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:0.55rem;width:min(250px,75vw);}
-.pin-key{
-  aspect-ratio:1;border:1px solid rgba(184,150,90,0.3);
-  background:rgba(255,255,255,0.05);color:var(--cream);
-  font-family:'Jost',sans-serif;font-size:clamp(1rem,4.5vw,1.3rem);font-weight:300;
-  border-radius:12px;cursor:pointer;transition:all 0.15s;
-  display:flex;align-items:center;justify-content:center;
-  min-height:52px;-webkit-tap-highlight-color:transparent;
-}
-.pin-key:hover{background:rgba(184,150,90,0.2);border-color:var(--gold);}
-.pin-key:active{transform:scale(0.93);background:rgba(184,150,90,0.3);}
-.pin-key.wide{grid-column:span 2;}
-.pin-error{color:#e07070;font-size:0.8rem;min-height:1.2em;text-align:center;}
-.pin-floral{font-size:1.8rem;color:var(--gold);opacity:0.4;}
-
-/* ===== HEADER ===== */
-header{
-  background:var(--deep);
-  padding:2rem 2rem 1.5rem;
+/* HERO */
+.hero{
+  background:var(--warm);
+  border-bottom:1px solid var(--border);
+  padding:2.5rem 1.5rem 2rem;
   text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-header::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 120%,rgba(184,150,90,0.18) 0%,transparent 70%);
-}
-.header-floral{color:var(--gold);opacity:0.5;font-size:1.2rem;letter-spacing:0.5em;}
-.header-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.2rem,5vw,3.8rem);
-  color:var(--cream);
-  font-style:italic;
-  line-height:1.1;
-  position:relative;
-}
-.header-title span{color:var(--gold-light);}
-.header-date{color:var(--gold-light);font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;margin-top:0.4rem;}
-.header-divider{
-  width:120px;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  margin:0.8rem auto;
-}
-
-/* ===== NAV TABS ===== */
-nav{
-  background:var(--white);
-  border-bottom:1px solid var(--warm);
-  padding:0 1rem;
-  display:flex;gap:0;
-  overflow-x:auto;
-  scrollbar-width:none;
-  position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(44,31,20,0.08);
-}
-nav::-webkit-scrollbar{display:none;}
-.tab-btn{
-  flex-shrink:0;
-  padding:1rem 1.2rem;
-  background:none;border:none;
-  font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:500;
-  color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;
-  cursor:pointer;border-bottom:2px solid transparent;
-  transition:all 0.2s;white-space:nowrap;
-}
-.tab-btn:hover{color:var(--gold);}
-.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
-
-/* ===== MAIN LAYOUT ===== */
-main{max-width:1100px;margin:0 auto;padding:2rem 1.2rem;}
-.section{display:none;animation:fadeIn 0.3s ease;}
-.section.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-
-.section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;
-}
-.section-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:2rem;font-style:italic;color:var(--deep);
-}
-.section-title small{
-  display:block;font-family:'Jost',sans-serif;font-size:0.75rem;
-  color:var(--muted);font-style:normal;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem;
-}
-
-/* ===== BUTTONS ===== */
-.btn{
-  display:inline-flex;align-items:center;gap:0.4rem;
-  padding:0.55rem 1.2rem;border-radius:8px;
-  font-family:'Jost',sans-serif;font-size:0.82rem;font-weight:500;
-  letter-spacing:0.05em;cursor:pointer;border:none;
-  transition:all 0.2s;
-}
-.btn-primary{background:var(--gold);color:var(--white);}
-.btn-primary:hover{background:var(--deep);}
-.btn-outline{background:transparent;color:var(--gold);border:1.5px solid var(--gold);}
-.btn-outline:hover{background:var(--gold);color:var(--white);}
-.btn-danger{background:transparent;color:#c0392b;border:1.5px solid #c0392b;padding:0.35rem 0.7rem;font-size:0.75rem;}
-.btn-danger:hover{background:#c0392b;color:white;}
-.btn-sm{padding:0.35rem 0.8rem;font-size:0.75rem;}
-.btn-sage{background:var(--sage);color:white;}
-.btn-sage:hover{background:#5a7e5e;}
-
-/* ===== CARDS ===== */
-.card{
-  background:var(--white);border-radius:var(--radius);
-  padding:1.5rem;box-shadow:var(--shadow);
-  border:1px solid rgba(184,150,90,0.1);
-}
-
-/* ===== CHECKLIST SECTION ===== */
-.checklist-categories{display:grid;gap:1.5rem;}
-.checklist-cat{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);}
-.cat-header{
-  background:linear-gradient(135deg,var(--deep),#4a3525);
-  padding:1rem 1.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.cat-title{color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;}
-.cat-progress{color:var(--gold-light);font-size:0.75rem;letter-spacing:0.1em;}
-.cat-body{padding:1rem 1.5rem;}
-.check-item{
-  display:flex;align-items:center;gap:0.8rem;
-  padding:0.7rem 0;border-bottom:1px solid var(--warm);
-  position:relative;
-}
-.check-item:last-child{border-bottom:none;}
-.check-item input[type=checkbox]{
-  width:18px;height:18px;cursor:pointer;accent-color:var(--gold);flex-shrink:0;
-}
-.check-label{flex:1;font-size:0.9rem;cursor:pointer;}
-.check-label.done{text-decoration:line-through;color:var(--muted);}
-.check-notes{
-  font-size:0.75rem;color:var(--muted);display:block;margin-top:0.15rem;
-}
-.check-edit-btn,.check-del-btn{
-  background:none;border:none;cursor:pointer;padding:0.2rem 0.4rem;
-  border-radius:4px;font-size:0.8rem;color:var(--muted);transition:all 0.2s;
-}
-.check-edit-btn:hover{color:var(--gold);}
-.check-del-btn:hover{color:#c0392b;}
-.add-item-row{display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;}
-.add-item-row input{
-  flex:1;min-width:120px;padding:0.5rem 0.8rem;border:1px solid var(--warm);
-  border-radius:8px;font-family:'Jost',sans-serif;font-size:0.85rem;
-  background:var(--cream);color:var(--text);outline:none;
-}
-.add-item-row input:focus{border-color:var(--gold);}
-
-/* ===== GUEST LIST ===== */
-.guest-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.stat-card{background:var(--white);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);line-height:1;}
-.stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem;}
-.guest-table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-thead th{
-  background:var(--deep);color:var(--cream);
-  padding:0.75rem 1rem;text-align:left;
-  font-weight:400;letter-spacing:0.06em;font-size:0.75rem;text-transform:uppercase;
-}
-tbody tr{border-bottom:1px solid var(--warm);transition:background 0.15s;}
-tbody tr:hover{background:var(--cream);}
-tbody td{padding:0.7rem 1rem;vertical-align:middle;}
-tbody td input,tbody td select{
-  border:none;background:transparent;font-family:'Jost',sans-serif;
-  font-size:0.85rem;color:var(--text);width:100%;outline:none;cursor:pointer;
-}
-tbody td input:focus,tbody td select:focus{
-  background:var(--warm);border-radius:4px;padding:0.2rem 0.4rem;
-}
-.rsvp-badge{
-  display:inline-block;padding:0.2rem 0.6rem;border-radius:20px;
-  font-size:0.7rem;font-weight:500;letter-spacing:0.05em;
-}
-.rsvp-yes{background:#d4edda;color:#155724;}
-.rsvp-no{background:#f8d7da;color:#721c24;}
-.rsvp-pending{background:#fff3cd;color:#856404;}
-
-/* ===== TIMELINE ===== */
-.timeline{position:relative;padding-left:2rem;}
-.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),var(--blush));}
-.timeline-item{position:relative;margin-bottom:1.5rem;}
-.timeline-dot{
-  position:absolute;left:-2rem;top:0.3rem;
-  width:18px;height:18px;border-radius:50%;
-  background:var(--gold);border:3px solid var(--white);
-  box-shadow:0 0 0 2px var(--gold);
-}
-.timeline-dot.done{background:var(--sage);}
-.timeline-content{background:var(--white);border-radius:12px;padding:1rem 1.2rem;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);}
-.timeline-time{font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;font-weight:500;}
-.timeline-title{font-size:0.95rem;font-weight:500;margin:0.2rem 0;}
-.timeline-notes{font-size:0.8rem;color:var(--muted);}
-
-/* ===== VENDORS ===== */
-.vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
-.vendor-card{background:var(--white);border-radius:var(--radius);padding:1.3rem;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);position:relative;}
-.vendor-cat-tag{
-  display:inline-block;padding:0.2rem 0.6rem;border-radius:20px;
-  background:var(--warm);color:var(--gold);font-size:0.7rem;
-  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;
-}
-.vendor-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;margin-bottom:0.3rem;}
-.vendor-info{font-size:0.8rem;color:var(--muted);line-height:1.6;}
-.vendor-status{
-  display:inline-flex;align-items:center;gap:0.3rem;
-  padding:0.2rem 0.6rem;border-radius:20px;font-size:0.7rem;margin-top:0.6rem;
-}
-.status-booked{background:#d4edda;color:#155724;}
-.status-pending{background:#fff3cd;color:#856404;}
-.status-contact{background:#cce5ff;color:#004085;}
-.vendor-actions{position:absolute;top:1rem;right:1rem;display:flex;gap:0.3rem;}
-
-/* ===== DECOR ===== */
-.decor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
-.decor-item{background:var(--white);border-radius:12px;padding:1.1rem;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);}
-.decor-emoji{font-size:2rem;margin-bottom:0.5rem;}
-.decor-name{font-size:0.9rem;font-weight:500;margin-bottom:0.3rem;}
-.decor-meta{font-size:0.75rem;color:var(--muted);}
-
-/* ===== FOOD ===== */
-.food-section{margin-bottom:1.5rem;}
-.food-section-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;margin-bottom:0.8rem;color:var(--deep);}
-.food-item{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--warm);font-size:0.88rem;}
-.food-item:last-child{border-bottom:none;}
-
-/* ===== FLOOR PLAN ===== */
-.floorplan-toolbar{
-  display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem;
-  padding:1rem;background:var(--white);border-radius:12px;box-shadow:var(--shadow);
-  border:1px solid rgba(184,150,90,0.1);
-}
-.tool-group{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;}
-.tool-group-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-right:0.2rem;}
-.tool-btn{
-  padding:0.4rem 0.8rem;border-radius:8px;
-  background:var(--cream);border:1px solid var(--warm);
-  font-size:0.8rem;cursor:pointer;color:var(--text);
-  transition:all 0.15s;display:flex;align-items:center;gap:0.3rem;
-}
-.tool-btn:hover,.tool-btn.active{background:var(--gold);color:white;border-color:var(--gold);}
-.floorplan-canvas-wrap{
   position:relative;overflow:hidden;
-  background:var(--white);border-radius:var(--radius);
-  box-shadow:var(--shadow);border:2px dashed rgba(184,150,90,0.3);
-  min-height:600px;
 }
-.canvas-tent-bg{
-  position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(184,150,90,0.08) 39px,rgba(184,150,90,0.08) 40px),
-             repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(184,150,90,0.08) 39px,rgba(184,150,90,0.08) 40px);
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,#F5DDD5 0%,transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,#DFF0E8 0%,transparent 70%);pointer-events:none;}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage-dark);background:var(--sage-light);border-radius:20px;padding:4px 14px;margin-bottom:0.8rem;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3rem);font-weight:600;color:var(--text);line-height:1.2;margin-bottom:0.5rem;}
+.hero h1 span{color:var(--sage-dark);font-style:italic;}
+.hero p{font-size:14px;color:var(--text-mid);font-weight:300;max-width:420px;margin:0 auto 1.5rem;line-height:1.6;}
+
+/* SYNC STATUS */
+.sync-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text-light);margin-bottom:1rem;
 }
-.canvas-tent-label{
-  position:absolute;top:1rem;left:50%;transform:translateX(-50%);
-  font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-style:italic;
-  color:rgba(184,150,90,0.4);letter-spacing:0.1em;pointer-events:none;white-space:nowrap;
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;transition:background 0.3s;}
+.sync-dot.live{background:var(--sage);}
+.sync-dot.saving{background:#f0c070;animation:pulse 0.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* PROGRESS */
+.progress-area{max-width:460px;margin:0 auto;}
+.progress-stats{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.progress-count{font-size:13px;color:var(--text-mid);}
+.progress-pct{font-family:'Playfair Display',serif;font-size:22px;color:var(--sage-dark);}
+.progress-track{height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-dark));border-radius:10px;transition:width 0.4s ease;width:0%;}
+
+/* CONTAINER */
+.container{max-width:700px;margin:0 auto;padding:1.5rem 1rem 0;}
+
+/* LIST HEADING */
+.list-heading{
+  font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;
+  color:var(--text);margin:2rem 0 0.8rem;
+  padding-bottom:0.5rem;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
 }
-#floorplan-canvas{position:relative;width:100%;min-height:600px;}
-.fp-item{
-  position:absolute;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:move;user-select:none;
-  transition:box-shadow 0.15s;
-  touch-action:none;
+.lh-tag{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;}
+.lh-orig{background:var(--sage-light);color:var(--sage-dark);}
+.lh-new{background:var(--blush);color:var(--blush-dark);}
+
+/* SECTION CARD */
+.section{
+  background:var(--warm);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:0.8rem;
+  overflow:hidden;box-shadow:var(--shadow);transition:box-shadow 0.2s;
 }
-.fp-item:hover .fp-controls,.fp-item.selected .fp-controls{display:flex;}
-.fp-item-body{
+.section:hover{box-shadow:0 4px 28px rgba(44,36,32,0.1);}
+.section-head{
+  display:flex;align-items:center;gap:10px;
+  padding:0.9rem 1.1rem;cursor:pointer;
+  border-bottom:1px solid var(--border);
+  user-select:none;transition:background 0.15s;
+}
+.section-head:hover{background:var(--cream);}
+.section-icon{font-size:20px;flex-shrink:0;}
+.section-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--text);flex:1;}
+.section-badge{font-size:11px;color:var(--text-light);background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:2px 9px;white-space:nowrap;}
+.section-badge.complete{color:var(--sage-dark);background:var(--sage-light);border-color:var(--sage);}
+.section-chevron{color:var(--text-light);font-size:11px;transition:transform 0.2s;flex-shrink:0;}
+.section.collapsed .section-chevron{transform:rotate(-90deg);}
+.section-bar{height:3px;background:var(--border);}
+.section-bar-fill{height:3px;background:var(--sage);transition:width 0.3s;width:0%;}
+.section-body{padding:0.2rem 0;}
+.section.collapsed .section-body,.section.collapsed .section-bar{display:none;}
+
+/* ITEM ROW */
+.item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 1.1rem;cursor:pointer;
+  transition:background 0.12s;
+  border-bottom:1px solid rgba(237,228,220,0.5);
+}
+.item:last-child{border-bottom:none;}
+.item:hover{background:var(--cream);}
+.item-check{
+  width:18px;height:18px;border:1.5px solid var(--border);
+  border-radius:5px;flex-shrink:0;margin-top:2px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:8px;transition:all 0.15s;
+  transition:all 0.15s;background:white;
 }
-.fp-item.selected .fp-item-body{box-shadow:0 0 0 2px var(--gold),0 4px 12px rgba(184,150,90,0.3);}
-.fp-label{
-  font-size:0.65rem;color:var(--text);text-align:center;
-  margin-top:3px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  pointer-events:none;
-}
-.fp-controls{
-  display:none;position:absolute;top:-28px;left:50%;transform:translateX(-50%);
-  gap:3px;background:var(--deep);border-radius:6px;padding:3px 5px;z-index:10;
-  white-space:nowrap;
-}
-.fp-ctrl-btn{
-  background:none;border:none;color:var(--cream);cursor:pointer;
-  font-size:0.7rem;padding:2px 4px;border-radius:3px;
-}
-.fp-ctrl-btn:hover{background:rgba(255,255,255,0.15);}
-.fp-legend{
-  display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1rem;
-  padding:0.8rem;background:var(--white);border-radius:10px;
-  box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);
-}
-.fp-legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);}
-.fp-legend-color{width:14px;height:14px;border-radius:3px;}
-.fp-count-row{display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:1rem;}
-.fp-count-card{background:var(--white);border-radius:10px;padding:0.7rem 1rem;box-shadow:var(--shadow);border:1px solid rgba(184,150,90,0.1);text-align:center;}
-.fp-count-num{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);}
-.fp-count-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;}
+.item.checked .item-check{background:var(--sage);border-color:var(--sage);}
+.item.checked .item-check::after{content:'✓';color:white;font-size:11px;font-weight:600;}
+.item-texts{flex:1;}
+.item-en{font-size:13.5px;color:var(--text);line-height:1.4;transition:color 0.15s;}
+.item-de{font-size:11.5px;color:var(--text-light);margin-top:1px;font-style:italic;}
+.item.checked .item-en{color:var(--text-light);text-decoration:line-through;}
+.item.checked .item-de{color:#c5b8b0;}
 
-/* ===== MODALS ===== */
-.modal-overlay{
-  display:none;position:fixed;inset:0;z-index:1000;
-  background:rgba(44,31,20,0.5);backdrop-filter:blur(4px);
-  align-items:center;justify-content:center;padding:1rem;
-}
-.modal-overlay.open{display:flex;}
-.modal{
-  background:var(--white);border-radius:20px;padding:2rem;
-  max-width:500px;width:100%;box-shadow:0 20px 60px rgba(44,31,20,0.3);
-  max-height:90vh;overflow-y:auto;
-}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;margin-bottom:1.2rem;}
-.form-field{margin-bottom:1rem;}
-.form-label{display:block;font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;}
-.form-input,.form-select,.form-textarea{
-  width:100%;padding:0.6rem 0.9rem;border:1.5px solid var(--warm);
-  border-radius:8px;font-family:'Jost',sans-serif;font-size:0.88rem;
-  color:var(--text);background:var(--cream);outline:none;
-  transition:border-color 0.2s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);}
-.form-textarea{resize:vertical;min-height:80px;}
-.modal-actions{display:flex;gap:0.7rem;justify-content:flex-end;margin-top:1.2rem;}
+/* CELEBRATE */
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0;}60%{transform:translate(-50%,-50%) scale(1.1);}100%{transform:translate(-50%,-50%) scale(1);opacity:1;}}
+.celebrate{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;text-align:center;box-shadow:0 20px 60px rgba(44,36,32,0.18);z-index:999;max-width:300px;width:90%;}
+.celebrate.show{display:block;animation:pop 0.4s ease forwards;}
+.celebrate-emoji{font-size:44px;margin-bottom:0.6rem;display:block;}
+.celebrate h2{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:0.4rem;}
+.celebrate p{font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;margin-bottom:1rem;}
+.celebrate button{background:var(--sage);color:white;border:none;border-radius:10px;padding:9px 24px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(44,36,32,0.3);z-index:998;}
+.overlay.show{display:block;}
 
-/* ===== TOAST ===== */
-#toast{
-  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
-  background:var(--deep);color:var(--cream);
-  padding:0.7rem 1.5rem;border-radius:30px;
-  font-size:0.85rem;z-index:9998;
-  opacity:0;transition:opacity 0.3s;pointer-events:none;
-  white-space:nowrap;
-}
-#toast.show{opacity:1;}
+/* FOOTER */
+.footer{text-align:center;padding:2.5rem 1rem 1rem;font-size:12px;color:var(--text-light);font-weight:300;}
 
-/* ===== SAVE INDICATOR ===== */
-#save-indicator{
-  position:fixed;top:1rem;right:1rem;z-index:500;
-  background:var(--sage);color:white;
-  padding:0.4rem 1rem;border-radius:20px;font-size:0.75rem;
-  opacity:0;transition:opacity 0.4s;pointer-events:none;
-}
-#save-indicator.show{opacity:1;}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:600px){
-  main{padding:1rem 0.8rem;}
-  .section-header{flex-direction:column;align-items:flex-start;}
-  .vendor-grid{grid-template-columns:1fr;}
-  .floorplan-canvas-wrap{min-height:400px;}
-  #floorplan-canvas{min-height:400px;}
+@media(max-width:480px){
+  .hero{padding:2rem 1rem 1.5rem;}
+  .container{padding:1rem 0.75rem 0;}
+  .section-head{padding:0.8rem 0.9rem;}
+  .item{padding:8px 0.9rem;}
 }
 </style>
 </head>
 <body>
 
-<!-- PIN SCREEN -->
-<div id="pin-screen">
-  <div class="pin-inner">
-    <div class="pin-floral">✦ ✦ ✦</div>
-    <div class="pin-title">Fiona & Julian<br/><em style="font-size:0.6em;opacity:0.7">Wedding Planner</em></div>
-    <div class="pin-subtitle">Enter your PIN to continue</div>
-    <div class="pin-dots" id="pin-dots">
-      <div class="pin-dot" id="d0"></div>
-      <div class="pin-dot" id="d1"></div>
-      <div class="pin-dot" id="d2"></div>
-      <div class="pin-dot" id="d3"></div>
+<div class="hero">
+  <div class="hero-tag">Baby Preparation · نونو أهو</div>
+  <h1>Welcome to <span>NounouAhuu</span> 🍼</h1>
+  <p>Tap each item to check it off. Progress syncs automatically across all devices.</p>
+  <div class="sync-badge">
+    <div class="sync-dot" id="sync-dot"></div>
+    <span id="sync-label">Connecting…</span>
+  </div>
+  <div class="progress-area">
+    <div class="progress-stats">
+      <span class="progress-count" id="prog-count">0 of 0 items</span>
+      <span class="progress-pct" id="prog-pct">0%</span>
     </div>
-    <div class="pin-error" id="pin-error"></div>
-    <div class="pin-keypad">
-      <button class="pin-key" onclick="pinPress('1')">1</button>
-      <button class="pin-key" onclick="pinPress('2')">2</button>
-      <button class="pin-key" onclick="pinPress('3')">3</button>
-      <button class="pin-key" onclick="pinPress('4')">4</button>
-      <button class="pin-key" onclick="pinPress('5')">5</button>
-      <button class="pin-key" onclick="pinPress('6')">6</button>
-      <button class="pin-key" onclick="pinPress('7')">7</button>
-      <button class="pin-key" onclick="pinPress('8')">8</button>
-      <button class="pin-key" onclick="pinPress('9')">9</button>
-      <button class="pin-key" onclick="pinPress('0')">0</button>
-      <button class="pin-key" onclick="pinBack()">⌫</button>
-    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
   </div>
 </div>
 
-<!-- HEADER -->
-<header>
-  <div class="header-floral">✦ ✦ ✦</div>
-  <div class="header-title"><span>Fiona</span> & <span>Julian</span></div>
-  <div class="header-date">06 · 06 · 2026 &nbsp;·&nbsp; Wedding Planner</div>
-  <div class="header-divider"></div>
-</header>
+<div class="container" id="app"></div>
+<div class="footer">NounouAhuu 🍼 &nbsp;·&nbsp; Syncs across all your devices</div>
 
-<!-- NAV -->
-<nav>
-  <button class="tab-btn active" onclick="showTab('checklist',this)">✓ Checklist</button>
-  <button class="tab-btn" onclick="showTab('guests',this)">👥 Guests</button>
-  <button class="tab-btn" onclick="showTab('timeline',this)">🕐 Timeline</button>
-  <button class="tab-btn" onclick="showTab('vendors',this)">🤝 Vendors</button>
-  <button class="tab-btn" onclick="showTab('decor',this)">🌸 Decor</button>
-  <button class="tab-btn" onclick="showTab('food',this)">🍽 Food</button>
-  <button class="tab-btn" onclick="showTab('floorplan',this)">🏕 Floor Plan</button>
-</nav>
-
-<main>
-
-<!-- ====== CHECKLIST ====== -->
-<div class="section active" id="sec-checklist">
-  <div class="section-header">
-    <div class="section-title"><small>Wedding</small>Master Checklist</div>
-    <button class="btn btn-primary" onclick="openAddCatModal()">+ Add Category</button>
-  </div>
-  <div class="checklist-categories" id="checklist-categories"></div>
+<div class="overlay" id="overlay" onclick="closeCelebrate()"></div>
+<div class="celebrate" id="celebrate">
+  <span class="celebrate-emoji">🎉</span>
+  <h2>All ready!</h2>
+  <p>Everything is prepared for your little one's arrival. Congratulations! 💛</p>
+  <button onclick="closeCelebrate()">Thank you! 💛</button>
 </div>
-
-<!-- ====== GUESTS ====== -->
-<div class="section" id="sec-guests">
-  <div class="section-header">
-    <div class="section-title"><small>Fiona & Julian</small>Guest List</div>
-    <button class="btn btn-primary" onclick="openGuestModal()">+ Add Guest</button>
-  </div>
-  <div class="guest-stats">
-    <div class="stat-card"><div class="stat-num" id="g-total">0</div><div class="stat-label">Total Invited</div></div>
-    <div class="stat-card"><div class="stat-num" id="g-yes">0</div><div class="stat-label">Confirmed ✓</div></div>
-    <div class="stat-card"><div class="stat-num" id="g-no">0</div><div class="stat-label">Declined</div></div>
-    <div class="stat-card"><div class="stat-num" id="g-pending">0</div><div class="stat-label">Pending</div></div>
-  </div>
-  <div class="card">
-    <div class="guest-table-wrap">
-      <table>
-        <thead><tr><th>Name</th><th>Side</th><th>Table</th><th>RSVP</th><th>Dietary</th><th>Notes</th><th></th></tr></thead>
-        <tbody id="guest-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ====== TIMELINE ====== -->
-<div class="section" id="sec-timeline">
-  <div class="section-header">
-    <div class="section-title"><small>Day of</small>Wedding Timeline</div>
-    <button class="btn btn-primary" onclick="openTimelineModal()">+ Add Event</button>
-  </div>
-  <div class="card">
-    <div class="timeline" id="timeline-list"></div>
-  </div>
-</div>
-
-<!-- ====== VENDORS ====== -->
-<div class="section" id="sec-vendors">
-  <div class="section-header">
-    <div class="section-title"><small>Contacts</small>Vendors & Suppliers</div>
-    <button class="btn btn-primary" onclick="openVendorModal()">+ Add Vendor</button>
-  </div>
-  <div class="vendor-grid" id="vendor-grid"></div>
-</div>
-
-<!-- ====== DECOR ====== -->
-<div class="section" id="sec-decor">
-  <div class="section-header">
-    <div class="section-title"><small>Flowers & More</small>Decor & Flowers</div>
-    <button class="btn btn-primary" onclick="openDecorModal()">+ Add Item</button>
-  </div>
-  <div class="decor-grid" id="decor-grid"></div>
-</div>
-
-<!-- ====== FOOD ====== -->
-<div class="section" id="sec-food">
-  <div class="section-header">
-    <div class="section-title"><small>Menu & Catering</small>Food & Drinks</div>
-    <button class="btn btn-primary" onclick="openFoodModal()">+ Add Item</button>
-  </div>
-  <div id="food-sections"></div>
-</div>
-
-<!-- ====== FLOOR PLAN ====== -->
-<div class="section" id="sec-floorplan">
-  <div class="section-header">
-    <div class="section-title"><small>Tent Layout</small>Floor Plan Editor</div>
-    <div style="display:flex;gap:0.5rem;">
-      <button class="btn btn-outline btn-sm" onclick="clearFloorplan()">🗑 Clear All</button>
-      <button class="btn btn-primary btn-sm" onclick="saveFloorplan()">💾 Save</button>
-    </div>
-  </div>
-  <div class="floorplan-toolbar">
-    <div class="tool-group">
-      <span class="tool-group-label">Add:</span>
-      <button class="tool-btn" onclick="addFPItem('round-table')">🔵 Round Table</button>
-      <button class="tool-btn" onclick="addFPItem('rect-table')">⬛ Long Table</button>
-      <button class="tool-btn" onclick="addFPItem('chair')">🪑 Chair</button>
-      <button class="tool-btn" onclick="addFPItem('stage')">🎭 Stage</button>
-      <button class="tool-btn" onclick="addFPItem('dancefloor')">💃 Dance Floor</button>
-      <button class="tool-btn" onclick="addFPItem('bar')">🍹 Bar</button>
-      <button class="tool-btn" onclick="addFPItem('entrance')">🚪 Entrance</button>
-      <button class="tool-btn" onclick="addFPItem('plant')">🌿 Plant</button>
-      <button class="tool-btn" onclick="addFPItem('buffet')">🍽 Buffet</button>
-      <button class="tool-btn" onclick="addFPItem('photo-booth')">📸 Photo Booth</button>
-      <button class="tool-btn" onclick="addFPItem('gift-table')">🎁 Gift Table</button>
-      <button class="tool-btn" onclick="addFPItem('sweetheart')">💑 Sweetheart</button>
-    </div>
-  </div>
-  <div class="floorplan-canvas-wrap">
-    <div class="canvas-tent-bg"></div>
-    <div class="canvas-tent-label">✦ Wedding Tent — Drag items to arrange ✦</div>
-    <div id="floorplan-canvas"></div>
-  </div>
-  <div class="fp-count-row" id="fp-count-row"></div>
-  <div class="fp-legend">
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#6baed6;border-radius:50%"></div>Round Table</div>
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#74c476"></div>Long Table</div>
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#fd8d3c;border-radius:50%"></div>Chair</div>
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#9e9ac8"></div>Stage</div>
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#e7298a;border-radius:4px"></div>Dance Floor</div>
-    <div class="fp-legend-item"><div class="fp-legend-color" style="background:#b8965a"></div>Other</div>
-  </div>
-</div>
-
-</main>
-
-<!-- ===== MODALS ===== -->
-
-<!-- Add Category Modal -->
-<div class="modal-overlay" id="modal-addcat">
-  <div class="modal">
-    <div class="modal-title">Add Checklist Category</div>
-    <div class="form-field"><label class="form-label">Category Name</label><input class="form-input" id="cat-name-input" placeholder="e.g. Photography"/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-addcat')">Cancel</button>
-      <button class="btn btn-primary" onclick="addCategory()">Add Category</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Check Item Modal -->
-<div class="modal-overlay" id="modal-additem">
-  <div class="modal">
-    <div class="modal-title">Add Checklist Item</div>
-    <input type="hidden" id="item-cat-id"/>
-    <div class="form-field"><label class="form-label">Task</label><input class="form-input" id="item-text-input" placeholder="e.g. Book photographer"/></div>
-    <div class="form-field"><label class="form-label">Notes (optional)</label><input class="form-input" id="item-notes-input" placeholder="e.g. Contact by March"/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-additem')">Cancel</button>
-      <button class="btn btn-primary" onclick="addCheckItem()">Add Item</button>
-    </div>
-  </div>
-</div>
-
-<!-- Guest Modal -->
-<div class="modal-overlay" id="modal-guest">
-  <div class="modal">
-    <div class="modal-title" id="guest-modal-title">Add Guest</div>
-    <input type="hidden" id="guest-edit-id"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-      <div class="form-field"><label class="form-label">Full Name</label><input class="form-input" id="g-name" placeholder="Name"/></div>
-      <div class="form-field"><label class="form-label">Side</label><select class="form-select" id="g-side"><option>Bride's</option><option>Groom's</option><option>Both</option></select></div>
-      <div class="form-field"><label class="form-label">Table #</label><input class="form-input" id="g-table" placeholder="e.g. 3"/></div>
-      <div class="form-field"><label class="form-label">RSVP</label><select class="form-select" id="g-rsvp"><option>Pending</option><option>Yes</option><option>No</option></select></div>
-    </div>
-    <div class="form-field"><label class="form-label">Dietary Requirements</label><input class="form-input" id="g-diet" placeholder="e.g. Vegetarian, Halal..."/></div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="g-notes" placeholder="Extra notes..."/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-guest')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveGuest()">Save Guest</button>
-    </div>
-  </div>
-</div>
-
-<!-- Timeline Modal -->
-<div class="modal-overlay" id="modal-timeline">
-  <div class="modal">
-    <div class="modal-title" id="timeline-modal-title">Add Timeline Event</div>
-    <input type="hidden" id="tl-edit-id"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-      <div class="form-field"><label class="form-label">Time</label><input class="form-input" id="tl-time" placeholder="e.g. 4:00 PM"/></div>
-      <div class="form-field"><label class="form-label">Duration</label><input class="form-input" id="tl-dur" placeholder="e.g. 30 min"/></div>
-    </div>
-    <div class="form-field"><label class="form-label">Event</label><input class="form-input" id="tl-title" placeholder="e.g. Ceremony begins"/></div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="tl-notes" placeholder="Details..."/></div>
-    <div class="form-field">
-      <label class="form-label">Status</label>
-      <select class="form-select" id="tl-done"><option value="0">Upcoming</option><option value="1">Done ✓</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-timeline')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveTimelineEvent()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Vendor Modal -->
-<div class="modal-overlay" id="modal-vendor">
-  <div class="modal">
-    <div class="modal-title" id="vendor-modal-title">Add Vendor</div>
-    <input type="hidden" id="v-edit-id"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-      <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="v-name" placeholder="Vendor name"/></div>
-      <div class="form-field"><label class="form-label">Category</label><input class="form-input" id="v-cat" placeholder="e.g. Florist"/></div>
-      <div class="form-field"><label class="form-label">Contact</label><input class="form-input" id="v-contact" placeholder="Phone / email"/></div>
-      <div class="form-field"><label class="form-label">Price (AED)</label><input class="form-input" type="number" id="v-price" placeholder="0"/></div>
-    </div>
-    <div class="form-field"><label class="form-label">Status</label><select class="form-select" id="v-status"><option>Pending</option><option>Booked</option><option>Contact</option></select></div>
-    <div class="form-field"><label class="form-label">Notes</label><textarea class="form-textarea" id="v-notes" placeholder="Notes..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-vendor')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveVendor()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Decor Modal -->
-<div class="modal-overlay" id="modal-decor">
-  <div class="modal">
-    <div class="modal-title" id="decor-modal-title">Add Decor Item</div>
-    <input type="hidden" id="dc-edit-id"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-      <div class="form-field"><label class="form-label">Emoji / Icon</label><input class="form-input" id="dc-emoji" placeholder="🌸"/></div>
-      <div class="form-field"><label class="form-label">Item Name</label><input class="form-input" id="dc-name" placeholder="e.g. Centrepieces"/></div>
-      <div class="form-field"><label class="form-label">Quantity</label><input class="form-input" id="dc-qty" placeholder="e.g. 20"/></div>
-      <div class="form-field"><label class="form-label">Cost (AED)</label><input class="form-input" type="number" id="dc-cost" placeholder="0"/></div>
-    </div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="dc-notes" placeholder="Colour, supplier..."/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-decor')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveDecor()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Food Modal -->
-<div class="modal-overlay" id="modal-food">
-  <div class="modal">
-    <div class="modal-title" id="food-modal-title">Add Food / Drink Item</div>
-    <input type="hidden" id="fd-edit-id"/>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-      <div class="form-field"><label class="form-label">Course / Category</label><input class="form-input" id="fd-cat" placeholder="e.g. Starters"/></div>
-      <div class="form-field"><label class="form-label">Item Name</label><input class="form-input" id="fd-name" placeholder="e.g. Hummus Platter"/></div>
-      <div class="form-field"><label class="form-label">Serves</label><input class="form-input" id="fd-serves" placeholder="e.g. 50 pax"/></div>
-      <div class="form-field"><label class="form-label">Cost (AED)</label><input class="form-input" type="number" id="fd-cost" placeholder="0"/></div>
-    </div>
-    <div class="form-field"><label class="form-label">Dietary Info</label><input class="form-input" id="fd-diet" placeholder="e.g. Halal, Vegan option"/></div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="fd-notes" placeholder="Notes..."/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-food')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveFood()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Label Edit Modal -->
-<div class="modal-overlay" id="modal-label">
-  <div class="modal" style="max-width:320px;">
-    <div class="modal-title">Edit Label</div>
-    <input type="hidden" id="label-item-id"/>
-    <div class="form-field"><label class="form-label">Label</label><input class="form-input" id="label-input" placeholder="Table label..."/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-label')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveLabel()">Save</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-<div id="save-indicator">✓ Saved</div>
 
 <script>
+// ===== DATA =====
+const originalSections = [
+  {
+    icon:'🧴', title:'Toiletries & Health · Drogerieartikel',
+    items:[
+      {id:'o_a1',  en:'Diapers',                                          de:'Windeln'},
+      {id:'o_a2',  en:'Baby wipes',                                       de:'Feuchttücher'},
+      {id:'o_a3',  en:'Baby shampoo',                                     de:'Baby Shampoo'},
+      {id:'o_a4',  en:'Baby oil',                                         de:'Baby Öl'},
+      {id:'o_a5',  en:'Baby thermometer',                                 de:'Thermometer für Baby'},
+      {id:'o_a6',  en:'Bath thermometer',                                 de:'Thermometer für Badewanne'},
+      {id:'o_a7',  en:'Diaper rash cream',                                de:'Wundschutz Creme'},
+      {id:'o_a8',  en:'Ready-to-feed formula pre HA (Hipp / Aptamil)',    de:'Fertig Milch pre HA Hipp/Aptamil'},
+      {id:'o_a9',  en:'Bottles with teats — Lansinoh brand, size S & M', de:'Flasche mit Sauger — Marke Lansinoh, Größe S und M'},
+      {id:'o_a10', en:'Sterilizer (optional)',                            de:'Sterilisator (ggf.)'},
+      {id:'o_a11', en:'Pacifier / dummy',                                 de:'Schnuller'},
+      {id:'o_a12', en:'Lanolin ointment',                                 de:'Lanolin Salbe'},
+      {id:'o_a13', en:'Octenisept antiseptic spray',                      de:'Octenisept'},
+      {id:'o_a14', en:'Sterile gauze pads',                               de:'Sterille Kompresse'},
+      {id:'o_a15', en:'Nipple shields',                                   de:'Stillhütchen'},
+    ]
+  },
+  {
+    icon:'👕', title:'Clothing · Kleidung',
+    items:[
+      {id:'o_c1',  en:'Towels',                    de:'Handtücher'},
+      {id:'o_c2',  en:'Washcloths',                de:'Waschlappen'},
+      {id:'o_c3',  en:'Burp cloths / muslin cloths',de:'Spucktücher'},
+      {id:'o_c4',  en:'10 onesies / bodysuits',    de:'10 Bodies'},
+      {id:'o_c5',  en:'5 rompers / trousers',      de:'5 Strampler / Hosen'},
+      {id:'o_c6',  en:'3 pajamas / sleepsuits',    de:'3 Schlafanzüge'},
+      {id:'o_c7',  en:'5 pairs of socks',          de:'5 Paar Söckchen'},
+      {id:'o_c8',  en:'2 sleep sacks',             de:'2 Schlafsäcke'},
+      {id:'o_c9',  en:'3 T-shirts',                de:'3 Tshirts'},
+      {id:'o_c10', en:'2 cardigans / jackets',     de:'2 Jäckchen'},
+      {id:'o_c11', en:'Long-sleeve shirts',        de:'Langarmshirts'},
+    ]
+  },
+  {
+    icon:'🛏️', title:'Equipment · Organisatorisches',
+    items:[
+      {id:'o_e1', en:'3-in-1 stroller / pram (with changing bag)', de:'3-in-1 Kinderwagen (evtl. mit Wickeltasche)'},
+      {id:'o_e2', en:'Baby bathtub',                               de:'Badewanne'},
+      {id:'o_e3', en:'Changing table',                             de:'Wickeltisch'},
+      {id:'o_e4', en:'Baby crib (from Schudi?)',                   de:'Babybett (von Schudi?)'},
+      {id:'o_e5', en:'Baby carrier (from Meike?)',                 de:'Babytrage (von Meike?)'},
+    ]
+  },
+  {
+    icon:'🤱', title:'For me · Für mich',
+    items:[
+      {id:'o_m1', en:'Nursing bras',    de:'Still-BHs'},
+      {id:'o_m2', en:'Nursing pads',   de:'Stilleinlagen'},
+      {id:'o_m3', en:'Nursing pillow', de:'Stillkissen'},
+    ]
+  }
+];
+
+const addedSections = [
+  {
+    icon:'🧴', title:'Toiletries & Health — Extras',
+    items:[
+      {id:'n_a1', en:'Saline nasal drops',                    de:'Salzwasser Nasentropfen'},
+      {id:'n_a2', en:'Nasal aspirator (e.g. Frida NoseFrida)',de:'Nasensauger (z.B. Frida NoseFrida)'},
+      {id:'n_a3', en:'Baby nail scissors or file',            de:'Babynagelschere oder -feile'},
+      {id:'n_a4', en:'Soft baby hairbrush',                   de:'Weiche Baby-Haarbürste'},
+      {id:'n_a5', en:'Cotton wool balls',                     de:'Wattebäusche'},
+    ]
+  },
+  {
+    icon:'🤱', title:'Breastfeeding — Extras',
+    items:[
+      {id:'n_b1', en:'Breast pump (manual or electric)', de:'Milchpumpe (manuell oder elektrisch)'},
+      {id:'n_b2', en:'Milk storage bags',               de:'Muttermilchbeutel'},
+      {id:'n_b3', en:'Nursing cover / scarf',           de:'Stillschal / Stillabdeckung'},
+      {id:'n_b4', en:'Bottle brush',                    de:'Flaschenbürste'},
+    ]
+  },
+  {
+    icon:'👕', title:'Clothing — Extras',
+    items:[
+      {id:'n_c1', en:'2 soft hats (newborn size)', de:'2 weiche Mützen (Neugeborengröße)'},
+      {id:'n_c2', en:'Scratch mittens',            de:'Kratzfäustlinge'},
+      {id:'n_c3', en:'2 hooded baby towels',       de:'2 Kapuzenbadetücher'},
+    ]
+  },
+  {
+    icon:'🛏️', title:'Sleeping — Extras',
+    items:[
+      {id:'n_d1', en:'Firm, flat mattress for crib',      de:'Feste, flache Matratze für Babybett'},
+      {id:'n_d2', en:'2–3 fitted crib sheets',            de:'2–3 Spannbettlaken'},
+      {id:'n_d3', en:'Waterproof mattress protector',     de:'Wasserdichter Matratzenschutz'},
+      {id:'n_d4', en:'Bedside bassinet / co-sleeper',     de:'Beistellbett / Co-Sleeper'},
+      {id:'n_d5', en:'White noise machine',               de:'Weißrauschmaschine'},
+    ]
+  },
+  {
+    icon:'🛁', title:'Bathing & Changing — Extras',
+    items:[
+      {id:'n_e1', en:'Waterproof changing mat (wipeable)', de:'Wasserdichte Wickelunterlage (abwischbar)'},
+      {id:'n_e2', en:'Nappy bin / diaper pail',           de:'Windeleimer'},
+    ]
+  },
+  {
+    icon:'🚗', title:'Getting Around — Extras',
+    items:[
+      {id:'n_f1', en:'Infant car seat (Group 0+)', de:'Babyschale (Gruppe 0+)'},
+      {id:'n_f2', en:'Rain cover for stroller',   de:'Regenschutz für Kinderwagen'},
+    ]
+  },
+  {
+    icon:'🧸', title:'Nice to Have · Schön zu haben',
+    items:[
+      {id:'n_g1', en:'Baby monitor (audio or video)',  de:'Babyphone (Audio oder Video)'},
+      {id:'n_g2', en:'Bouncer or rocker seat',         de:'Babywippe'},
+      {id:'n_g3', en:'Play mat with activity arch',    de:'Spielmatte mit Aktivitätsbogen'},
+      {id:'n_g4', en:'3–4 swaddle blankets',           de:'3–4 Pucktücher'},
+      {id:'n_g5', en:'3–4 muslin blankets',            de:'3–4 Musselin-Decken'},
+    ]
+  }
+];
+
 // ===== STATE =====
-let state = {
-  checklist: {},   // {catId: {name, items: {itemId: {text, done, notes}}}}
-  guests: {},
-
-  timeline: {},
-  vendors: {},
-  decor: {},
-  food: {},
-  floorplan: {}
-};
-
+let checked = {};
 let fbReady = false;
-let saveTimeout = null;
-
-// ===== PIN =====
-let pinEntry = '';
-const PIN = '0606';
-
-function pinPress(d) {
-  if (pinEntry.length >= 4) return;
-  pinEntry += d;
-  updatePinDots();
-  if (pinEntry.length === 4) {
-    setTimeout(() => {
-      if (pinEntry === PIN) {
-        document.getElementById('pin-screen').classList.add('hidden');
-        initApp();
-      } else {
-        document.getElementById('pin-error').textContent = 'Incorrect PIN. Try again.';
-        pinEntry = '';
-        updatePinDots();
-        setTimeout(()=>{ document.getElementById('pin-error').textContent=''; }, 1500);
-      }
-    }, 200);
-  }
-}
-function pinBack() {
-  pinEntry = pinEntry.slice(0,-1);
-  updatePinDots();
-}
-function updatePinDots() {
-  for(let i=0;i<4;i++){
-    document.getElementById('d'+i).classList.toggle('filled', i < pinEntry.length);
-  }
-}
-document.addEventListener('keydown', e => {
-  if (document.getElementById('pin-screen').classList.contains('hidden')) return;
-  if (e.key >= '0' && e.key <= '9') pinPress(e.key);
-  if (e.key === 'Backspace') pinBack();
-});
-
-// ===== TAB NAV =====
-function showTab(name, btn) {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  btn.classList.add('active');
-}
+let saveTimer = null;
 
 // ===== FIREBASE =====
-function dbSet(path, val) {
-  if (!fbReady) return;
-  window._dbSet(window._dbRef(window._db, path), val);
-  showSaveIndicator();
-}
-function dbPush(path, val) {
-  if (!fbReady) return;
-  return window._dbPush(window._dbRef(window._db, path), val);
-}
-function dbRemove(path) {
-  if (!fbReady) return;
-  window._dbRemove(window._dbRef(window._db, path));
-}
-function showSaveIndicator() {
-  const el = document.getElementById('save-indicator');
-  el.classList.add('show');
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(()=>el.classList.remove('show'), 2000);
-}
-
-function initApp() {
-  if (!window._firebaseReady) {
-    document.addEventListener('firebase-ready', ()=>loadFromFirebase());
-    // fallback to localStorage demo
-    loadLocalFallback();
-    return;
-  }
-  loadFromFirebase();
-}
-
-function loadFromFirebase() {
+function initFirebase() {
   fbReady = true;
-  window._dbOnValue(window._dbRef(window._db, 'wedding'), snap => {
-    const data = snap.val();
-    if (data) {
-      state = {...state, ...data};
-      if (!state.checklist) state.checklist = {};
-      if (!state.guests) state.guests = {};
-      if (!state.timeline) state.timeline = {};
-      if (!state.vendors) state.vendors = {};
-      if (!state.decor) state.decor = {};
-      if (!state.food) state.food = {};
-      if (!state.floorplan) state.floorplan = {};
-    } else {
-      seedDefaults();
-    }
+  setSyncStatus('live','Synced ✓');
+  window._onValue(window._ref(window._db,'nounou/checked'), snap => {
+    const val = snap.val();
+    checked = val || {};
     renderAll();
+    updateProgress();
   });
 }
 
-function loadLocalFallback() {
-  // Use localStorage if Firebase not configured
-  const saved = localStorage.getItem('fj-wedding');
-  if (saved) {
-    try { state = {...state, ...JSON.parse(saved)}; } catch(e){}
-  } else {
-    seedDefaults();
-  }
-  renderAll();
-  // Override dbSet to save to localStorage
-  window._localMode = true;
+function saveToFirebase() {
+  if (!fbReady) { saveLocal(); return; }
+  setSyncStatus('saving','Saving…');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    window._set(window._ref(window._db,'nounou/checked'), checked)
+      .then(()=>setSyncStatus('live','Synced ✓'))
+      .catch(()=>setSyncStatus('','Error — saved locally'));
+    saveLocal();
+  }, 600);
 }
 
 function saveLocal() {
-  localStorage.setItem('fj-wedding', JSON.stringify(state));
-  showSaveIndicator();
+  try { localStorage.setItem('nounou-v1', JSON.stringify(checked)); } catch(e){}
 }
-function saveState() {
-  if (window._localMode || !fbReady) { saveLocal(); return; }
-  dbSet('wedding', state);
+function loadLocal() {
+  try { const s = localStorage.getItem('nounou-v1'); if(s) checked = JSON.parse(s); } catch(e){}
 }
 
-function seedDefaults() {
-  state.checklist = {
-    cat1: { name:'Venue & Tent', items:{
-      i1:{text:'Book tent/marquee supplier',done:false,notes:''},
-      i2:{text:'Confirm venue layout & power points',done:false,notes:''},
-      i3:{text:'Arrange parking',done:false,notes:''},
-    }},
-    cat2: { name:'Ceremony', items:{
-      i1:{text:'Officiant / celebrant booked',done:false,notes:''},
-      i2:{text:'Ceremony music arranged',done:false,notes:''},
-      i3:{text:'Vows written',done:false,notes:''},
-      i4:{text:'Rings collected',done:false,notes:''},
-    }},
-    cat3: { name:'Photography & Video', items:{
-      i1:{text:'Photographer booked',done:false,notes:''},
-      i2:{text:'Videographer booked',done:false,notes:''},
-      i3:{text:'Shot list prepared',done:false,notes:''},
-    }},
-    cat4: { name:'Attire', items:{
-      i1:{text:"Bride's dress fitted",done:false,notes:''},
-      i2:{text:'Groom suit/outfit sorted',done:false,notes:''},
-      i3:{text:'Bridesmaid dresses confirmed',done:false,notes:''},
-      i4:{text:'Shoes & accessories ready',done:false,notes:''},
-    }},
-  };
-  state.timeline = {
-    t1:{time:'12:00 PM',title:'Bridal party gets ready',notes:'Hair & makeup',done:false,dur:'2 hrs'},
-    t2:{time:'3:00 PM',title:'Guests arrive',notes:'Welcome drinks',done:false,dur:'30 min'},
-    t3:{time:'4:00 PM',title:'Ceremony begins',notes:'Garden setting',done:false,dur:'45 min'},
-    t4:{time:'5:00 PM',title:'Cocktail hour',notes:'Canapés & drinks',done:false,dur:'1 hr'},
-    t5:{time:'6:00 PM',title:'Reception dinner',notes:'Tent setup',done:false,dur:'2 hrs'},
-    t6:{time:'8:00 PM',title:'First dance',notes:'',done:false,dur:'15 min'},
-    t7:{time:'8:30 PM',title:'Dancing & celebrations',notes:'DJ / band',done:false,dur:'3 hrs'},
-    t8:{time:'11:30 PM',title:'Last dance & farewell',notes:'',done:false,dur:'30 min'},
-  };
-  state.vendors = {
-    v1:{name:'TBD Florist',cat:'Flowers',contact:'',price:0,status:'Pending',notes:''},
-    v2:{name:'TBD Caterer',cat:'Catering',contact:'',price:0,status:'Pending',notes:''},
-    v3:{name:'TBD DJ / Band',cat:'Entertainment',contact:'',price:0,status:'Pending',notes:''},
-  };
-  state.decor = {
-    d1:{emoji:'💐',name:'Floral Centrepieces',qty:'',cost:0,notes:''},
-    d2:{emoji:'🕯️',name:'Candles',qty:'',cost:0,notes:''},
-    d3:{emoji:'🌿',name:'Greenery / Plants',qty:'',cost:0,notes:''},
-  };
-  state.food = {
-    f1:{cat:'Welcome Drinks',name:'Lemonade & Mocktails',serves:'All guests',cost:0,diet:'Non-alcoholic options',notes:''},
-    f2:{cat:'Starters',name:'Mezze Platter',serves:'All tables',cost:0,diet:'Vegetarian',notes:''},
-    f3:{cat:'Main Course',name:'Grilled Chicken & Lamb',serves:'All guests',cost:0,diet:'Halal available',notes:''},
-    f4:{cat:'Dessert',name:'Wedding Cake',serves:'All guests',cost:0,diet:'',notes:''},
-  };
+function setSyncStatus(state, label) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  dot.className = 'sync-dot' + (state ? ' '+state : '');
+  lbl.textContent = label;
 }
 
-// ===== RENDER ALL =====
-function renderAll() {
-  renderChecklist();
-  renderGuests();
-  renderTimeline();
-  renderVendors();
-  renderDecor();
-  renderFood();
-  renderFloorplan();
-}
+// ===== RENDER =====
+function buildSection(sec, uid) {
+  const div = document.createElement('div');
+  div.className = 'section';
+  div.id = 'sec-'+uid;
 
-// ===== CHECKLIST =====
-function renderChecklist() {
-  const container = document.getElementById('checklist-categories');
-  container.innerHTML = '';
-  const cats = state.checklist || {};
-  Object.entries(cats).forEach(([catId, cat]) => {
-    const items = cat.items || {};
-    const total = Object.keys(items).length;
-    const done = Object.values(items).filter(i=>i.done).length;
-    const div = document.createElement('div');
-    div.className = 'checklist-cat';
-    div.innerHTML = `
-      <div class="cat-header">
-        <div class="cat-title">${esc(cat.name)}</div>
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <div class="cat-progress">${done}/${total} done</div>
-          <button class="btn btn-outline btn-sm" style="color:var(--gold-light);border-color:rgba(184,150,90,0.4);" onclick="openAddItemModal('${catId}')">+ Item</button>
-          <button style="background:none;border:none;color:#e07070;cursor:pointer;font-size:0.8rem;" onclick="deleteCategory('${catId}')">✕</button>
-        </div>
-      </div>
-      <div class="cat-body" id="cat-body-${catId}"></div>
-    `;
-    container.appendChild(div);
-    const body = document.getElementById('cat-body-'+catId);
-    Object.entries(items).forEach(([itemId, item]) => {
-      const row = document.createElement('div');
-      row.className = 'check-item';
-      row.innerHTML = `
-        <input type="checkbox" ${item.done?'checked':''} onchange="toggleCheck('${catId}','${itemId}',this.checked)"/>
-        <label class="check-label ${item.done?'done':''}" onclick="this.previousElementSibling.click()">
-          ${esc(item.text)}
-          ${item.notes?`<span class="check-notes">${esc(item.notes)}</span>`:''}
-        </label>
-        <button class="check-edit-btn" onclick="editCheckItem('${catId}','${itemId}')">✏️</button>
-        <button class="check-del-btn" onclick="deleteCheckItem('${catId}','${itemId}')">✕</button>
-      `;
-      body.appendChild(row);
-    });
-  });
-}
-
-function openAddCatModal() {
-  document.getElementById('cat-name-input').value='';
-  openModal('modal-addcat');
-}
-function addCategory() {
-  const name = document.getElementById('cat-name-input').value.trim();
-  if (!name) return;
-  const id = 'cat'+Date.now();
-  if (!state.checklist) state.checklist={};
-  state.checklist[id] = {name, items:{}};
-  saveState();
-  renderChecklist();
-  closeModal('modal-addcat');
-  toast('Category added!');
-}
-function deleteCategory(catId) {
-  if (!confirm('Delete this category and all its items?')) return;
-  delete state.checklist[catId];
-  saveState();
-  renderChecklist();
-}
-function openAddItemModal(catId) {
-  document.getElementById('item-cat-id').value = catId;
-  document.getElementById('item-text-input').value = '';
-  document.getElementById('item-notes-input').value = '';
-  openModal('modal-additem');
-}
-function addCheckItem() {
-  const catId = document.getElementById('item-cat-id').value;
-  const text = document.getElementById('item-text-input').value.trim();
-  const notes = document.getElementById('item-notes-input').value.trim();
-  if (!text) return;
-  const id = 'i'+Date.now();
-  if (!state.checklist[catId].items) state.checklist[catId].items={};
-  state.checklist[catId].items[id] = {text, done:false, notes};
-  saveState();
-  renderChecklist();
-  closeModal('modal-additem');
-  toast('Item added!');
-}
-function toggleCheck(catId, itemId, val) {
-  state.checklist[catId].items[itemId].done = val;
-  saveState();
-  renderChecklist();
-}
-function deleteCheckItem(catId, itemId) {
-  delete state.checklist[catId].items[itemId];
-  saveState();
-  renderChecklist();
-}
-function editCheckItem(catId, itemId) {
-  const item = state.checklist[catId].items[itemId];
-  document.getElementById('item-cat-id').value = catId+'|'+itemId;
-  document.getElementById('item-text-input').value = item.text;
-  document.getElementById('item-notes-input').value = item.notes||'';
-  openModal('modal-additem');
-}
-
-// ===== GUESTS =====
-function renderGuests() {
-  const guests = state.guests || {};
-  const arr = Object.entries(guests);
-  document.getElementById('g-total').textContent = arr.length;
-  document.getElementById('g-yes').textContent = arr.filter(([,g])=>g.rsvp==='Yes').length;
-  document.getElementById('g-no').textContent = arr.filter(([,g])=>g.rsvp==='No').length;
-  document.getElementById('g-pending').textContent = arr.filter(([,g])=>g.rsvp==='Pending').length;
-  const tbody = document.getElementById('guest-tbody');
-  tbody.innerHTML = '';
-  arr.forEach(([id, g]) => {
-    const badgeClass = g.rsvp==='Yes'?'rsvp-yes':g.rsvp==='No'?'rsvp-no':'rsvp-pending';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input value="${esc(g.name)}" onchange="updateGuest('${id}','name',this.value)"/></td>
-      <td><input value="${esc(g.side)}" onchange="updateGuest('${id}','side',this.value)"/></td>
-      <td><input value="${esc(g.table)}" onchange="updateGuest('${id}','table',this.value)"/></td>
-      <td><span class="rsvp-badge ${badgeClass}">${esc(g.rsvp)}</span></td>
-      <td><input value="${esc(g.diet||'')}" onchange="updateGuest('${id}','diet',this.value)"/></td>
-      <td><input value="${esc(g.notes||'')}" onchange="updateGuest('${id}','notes',this.value)"/></td>
-      <td style="display:flex;gap:0.3rem;">
-        <button class="btn btn-outline btn-sm" onclick="openGuestModal('${id}')">✏️</button>
-        <button class="btn btn-danger" onclick="deleteGuest('${id}')">✕</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-function openGuestModal(id) {
-  document.getElementById('guest-edit-id').value = id||'';
-  if (id && state.guests[id]) {
-    const g = state.guests[id];
-    document.getElementById('guest-modal-title').textContent = 'Edit Guest';
-    document.getElementById('g-name').value = g.name||'';
-    document.getElementById('g-side').value = g.side||'Bride\'s';
-    document.getElementById('g-table').value = g.table||'';
-    document.getElementById('g-rsvp').value = g.rsvp||'Pending';
-    document.getElementById('g-diet').value = g.diet||'';
-    document.getElementById('g-notes').value = g.notes||'';
-  } else {
-    document.getElementById('guest-modal-title').textContent = 'Add Guest';
-    ['g-name','g-table','g-diet','g-notes'].forEach(f=>document.getElementById(f).value='');
-    document.getElementById('g-rsvp').value = 'Pending';
-  }
-  openModal('modal-guest');
-}
-function saveGuest() {
-  const id = document.getElementById('guest-edit-id').value || 'g'+Date.now();
-  if (!state.guests) state.guests={};
-  state.guests[id] = {
-    name: document.getElementById('g-name').value.trim(),
-    side: document.getElementById('g-side').value,
-    table: document.getElementById('g-table').value.trim(),
-    rsvp: document.getElementById('g-rsvp').value,
-    diet: document.getElementById('g-diet').value.trim(),
-    notes: document.getElementById('g-notes').value.trim(),
-  };
-  saveState(); renderGuests(); closeModal('modal-guest'); toast('Guest saved!');
-}
-function updateGuest(id, field, val) {
-  state.guests[id][field] = val;
-  saveState(); renderGuests();
-}
-function deleteGuest(id) {
-  if (!confirm('Remove this guest?')) return;
-  delete state.guests[id];
-  saveState(); renderGuests();
-}
-
-// ===== TIMELINE =====
-function renderTimeline() {
-  const list = document.getElementById('timeline-list');
-  list.innerHTML = '';
-  const items = state.timeline || {};
-  const sorted = Object.entries(items).sort((a,b)=>a[1].time.localeCompare(b[1].time));
-  sorted.forEach(([id,ev]) => {
-    const div = document.createElement('div');
-    div.className = 'timeline-item';
-    div.innerHTML = `
-      <div class="timeline-dot ${ev.done?'done':''}"></div>
-      <div class="timeline-content">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <div class="timeline-time">${esc(ev.time)} ${ev.dur?'· '+esc(ev.dur):''}</div>
-            <div class="timeline-title">${esc(ev.title)}</div>
-            ${ev.notes?`<div class="timeline-notes">${esc(ev.notes)}</div>`:''}
-          </div>
-          <div style="display:flex;gap:0.3rem;flex-shrink:0;margin-left:1rem;">
-            <button class="btn btn-outline btn-sm" onclick="openTimelineModal('${id}')">✏️</button>
-            <button class="btn btn-danger" onclick="deleteTimelineEvent('${id}')">✕</button>
-          </div>
-        </div>
-        <div style="margin-top:0.5rem;">
-          <label style="font-size:0.75rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:0.4rem;">
-            <input type="checkbox" ${ev.done?'checked':''} onchange="toggleTimeline('${id}',this.checked)" style="accent-color:var(--sage)"/>
-            Mark as done
-          </label>
-        </div>
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
-function openTimelineModal(id) {
-  document.getElementById('tl-edit-id').value = id||'';
-  if (id && state.timeline && state.timeline[id]) {
-    const ev = state.timeline[id];
-    document.getElementById('timeline-modal-title').textContent = 'Edit Event';
-    document.getElementById('tl-time').value = ev.time||'';
-    document.getElementById('tl-dur').value = ev.dur||'';
-    document.getElementById('tl-title').value = ev.title||'';
-    document.getElementById('tl-notes').value = ev.notes||'';
-    document.getElementById('tl-done').value = ev.done?'1':'0';
-  } else {
-    document.getElementById('timeline-modal-title').textContent = 'Add Event';
-    ['tl-time','tl-dur','tl-title','tl-notes'].forEach(f=>document.getElementById(f).value='');
-    document.getElementById('tl-done').value = '0';
-  }
-  openModal('modal-timeline');
-}
-function saveTimelineEvent() {
-  const id = document.getElementById('tl-edit-id').value || 'tl'+Date.now();
-  if (!state.timeline) state.timeline={};
-  state.timeline[id] = {
-    time: document.getElementById('tl-time').value.trim(),
-    dur: document.getElementById('tl-dur').value.trim(),
-    title: document.getElementById('tl-title').value.trim(),
-    notes: document.getElementById('tl-notes').value.trim(),
-    done: document.getElementById('tl-done').value === '1',
-  };
-  saveState(); renderTimeline(); closeModal('modal-timeline'); toast('Event saved!');
-}
-function toggleTimeline(id, val) {
-  state.timeline[id].done = val;
-  saveState(); renderTimeline();
-}
-function deleteTimelineEvent(id) {
-  delete state.timeline[id];
-  saveState(); renderTimeline();
-}
-
-// ===== VENDORS =====
-function renderVendors() {
-  const grid = document.getElementById('vendor-grid');
-  grid.innerHTML = '';
-  Object.entries(state.vendors||{}).forEach(([id,v]) => {
-    const statusClass = v.status==='Booked'?'status-booked':v.status==='Contact'?'status-contact':'status-pending';
-    const card = document.createElement('div');
-    card.className = 'vendor-card';
-    card.innerHTML = `
-      <div class="vendor-actions">
-        <button class="btn btn-outline btn-sm" onclick="openVendorModal('${id}')">✏️</button>
-        <button class="btn btn-danger" onclick="deleteVendor('${id}')">✕</button>
-      </div>
-      <div class="vendor-cat-tag">${esc(v.cat)}</div>
-      <div class="vendor-name">${esc(v.name)}</div>
-      <div class="vendor-info">
-        ${v.contact?`📞 ${esc(v.contact)}<br/>`:''}
-        ${v.price?`💰 AED ${fmt(v.price)}<br/>`:''}
-        ${v.notes?`📝 ${esc(v.notes)}`:''}
-      </div>
-      <span class="vendor-status ${statusClass}">● ${esc(v.status)}</span>
-    `;
-    grid.appendChild(card);
-  });
-  // Add card
-  const add = document.createElement('div');
-  add.className = 'vendor-card';
-  add.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:140px;cursor:pointer;border:2px dashed rgba(184,150,90,0.3);background:transparent;box-shadow:none;';
-  add.innerHTML = '<span style="color:var(--gold);font-size:0.9rem;">+ Add Vendor</span>';
-  add.onclick = ()=>openVendorModal();
-  grid.appendChild(add);
-}
-function openVendorModal(id) {
-  document.getElementById('v-edit-id').value = id||'';
-  if (id && state.vendors && state.vendors[id]) {
-    const v = state.vendors[id];
-    document.getElementById('vendor-modal-title').textContent = 'Edit Vendor';
-    document.getElementById('v-name').value = v.name||'';
-    document.getElementById('v-cat').value = v.cat||'';
-    document.getElementById('v-contact').value = v.contact||'';
-    document.getElementById('v-price').value = v.price||'';
-    document.getElementById('v-status').value = v.status||'Pending';
-    document.getElementById('v-notes').value = v.notes||'';
-  } else {
-    document.getElementById('vendor-modal-title').textContent = 'Add Vendor';
-    ['v-name','v-cat','v-contact','v-price','v-notes'].forEach(f=>document.getElementById(f).value='');
-    document.getElementById('v-status').value = 'Pending';
-  }
-  openModal('modal-vendor');
-}
-function saveVendor() {
-  const id = document.getElementById('v-edit-id').value || 'v'+Date.now();
-  if (!state.vendors) state.vendors={};
-  state.vendors[id] = {
-    name: document.getElementById('v-name').value.trim(),
-    cat: document.getElementById('v-cat').value.trim(),
-    contact: document.getElementById('v-contact').value.trim(),
-    price: parseFloat(document.getElementById('v-price').value)||0,
-    status: document.getElementById('v-status').value,
-    notes: document.getElementById('v-notes').value.trim(),
-  };
-  saveState(); renderVendors(); closeModal('modal-vendor'); toast('Vendor saved!');
-}
-function deleteVendor(id) {
-  delete state.vendors[id];
-  saveState(); renderVendors();
-}
-
-// ===== DECOR =====
-function renderDecor() {
-  const grid = document.getElementById('decor-grid');
-  grid.innerHTML = '';
-  Object.entries(state.decor||{}).forEach(([id,d]) => {
-    const card = document.createElement('div');
-    card.className = 'decor-item';
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;">
-        <div class="decor-emoji">${d.emoji||'🌸'}</div>
-        <div style="display:flex;gap:0.3rem;">
-          <button class="btn btn-outline btn-sm" onclick="openDecorModal('${id}')">✏️</button>
-          <button class="btn btn-danger" onclick="deleteDecor('${id}')">✕</button>
-        </div>
-      </div>
-      <div class="decor-name">${esc(d.name)}</div>
-      <div class="decor-meta">${d.qty?'Qty: '+esc(d.qty)+'&nbsp;&nbsp;':''}${d.cost?'AED '+fmt(d.cost):''}</div>
-      ${d.notes?`<div class="decor-meta" style="margin-top:0.3rem;">${esc(d.notes)}</div>`:''}
-    `;
-    grid.appendChild(card);
-  });
-}
-function openDecorModal(id) {
-  document.getElementById('dc-edit-id').value = id||'';
-  if (id && state.decor && state.decor[id]) {
-    const d = state.decor[id];
-    document.getElementById('decor-modal-title').textContent = 'Edit Decor Item';
-    document.getElementById('dc-emoji').value = d.emoji||'';
-    document.getElementById('dc-name').value = d.name||'';
-    document.getElementById('dc-qty').value = d.qty||'';
-    document.getElementById('dc-cost').value = d.cost||'';
-    document.getElementById('dc-notes').value = d.notes||'';
-  } else {
-    document.getElementById('decor-modal-title').textContent = 'Add Decor Item';
-    ['dc-emoji','dc-name','dc-qty','dc-cost','dc-notes'].forEach(f=>document.getElementById(f).value='');
-  }
-  openModal('modal-decor');
-}
-function saveDecor() {
-  const id = document.getElementById('dc-edit-id').value || 'd'+Date.now();
-  if (!state.decor) state.decor={};
-  state.decor[id] = {
-    emoji: document.getElementById('dc-emoji').value.trim()||'🌸',
-    name: document.getElementById('dc-name').value.trim(),
-    qty: document.getElementById('dc-qty').value.trim(),
-    cost: parseFloat(document.getElementById('dc-cost').value)||0,
-    notes: document.getElementById('dc-notes').value.trim(),
-  };
-  saveState(); renderDecor(); closeModal('modal-decor'); toast('Decor item saved!');
-}
-function deleteDecor(id) {
-  delete state.decor[id];
-  saveState(); renderDecor();
-}
-
-// ===== FOOD =====
-function renderFood() {
-  const container = document.getElementById('food-sections');
-  container.innerHTML = '';
-  const items = state.food || {};
-  const byCat = {};
-  Object.entries(items).forEach(([id,f]) => {
-    if (!byCat[f.cat]) byCat[f.cat] = [];
-    byCat[f.cat].push({id,...f});
-  });
-  Object.entries(byCat).forEach(([cat,arr]) => {
-    const div = document.createElement('div');
-    div.className = 'card food-section';
-    div.innerHTML = `<div class="food-section-title">${esc(cat)}</div>`;
-    arr.forEach(f => {
-      div.innerHTML += `
-        <div class="food-item">
-          <div>
-            <div style="font-weight:500;">${esc(f.name)}</div>
-            <div style="font-size:0.75rem;color:var(--muted);">${f.serves?'Serves: '+esc(f.serves)+'  ':''} ${f.diet?'🌱 '+esc(f.diet):''}</div>
-            ${f.notes?`<div style="font-size:0.75rem;color:var(--muted);">${esc(f.notes)}</div>`:''}
-          </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            ${f.cost?`<span style="color:var(--gold);font-size:0.85rem;">AED ${fmt(f.cost)}</span>`:''}
-            <button class="btn btn-outline btn-sm" onclick="openFoodModal('${f.id}')">✏️</button>
-            <button class="btn btn-danger" onclick="deleteFood('${f.id}')">✕</button>
-          </div>
-        </div>
-      `;
-    });
-    container.appendChild(div);
-  });
-  if (!Object.keys(items).length) {
-    container.innerHTML = '<div class="card" style="text-align:center;color:var(--muted);padding:2rem;">No food items yet. Add your menu!</div>';
-  }
-}
-function openFoodModal(id) {
-  document.getElementById('fd-edit-id').value = id||'';
-  if (id && state.food && state.food[id]) {
-    const f = state.food[id];
-    document.getElementById('food-modal-title').textContent = 'Edit Food Item';
-    document.getElementById('fd-cat').value = f.cat||'';
-    document.getElementById('fd-name').value = f.name||'';
-    document.getElementById('fd-serves').value = f.serves||'';
-    document.getElementById('fd-cost').value = f.cost||'';
-    document.getElementById('fd-diet').value = f.diet||'';
-    document.getElementById('fd-notes').value = f.notes||'';
-  } else {
-    document.getElementById('food-modal-title').textContent = 'Add Food Item';
-    ['fd-cat','fd-name','fd-serves','fd-cost','fd-diet','fd-notes'].forEach(f=>document.getElementById(f).value='');
-  }
-  openModal('modal-food');
-}
-function saveFood() {
-  const id = document.getElementById('fd-edit-id').value || 'f'+Date.now();
-  if (!state.food) state.food={};
-  state.food[id] = {
-    cat: document.getElementById('fd-cat').value.trim(),
-    name: document.getElementById('fd-name').value.trim(),
-    serves: document.getElementById('fd-serves').value.trim(),
-    cost: parseFloat(document.getElementById('fd-cost').value)||0,
-    diet: document.getElementById('fd-diet').value.trim(),
-    notes: document.getElementById('fd-notes').value.trim(),
-  };
-  saveState(); renderFood(); closeModal('modal-food'); toast('Food item saved!');
-}
-function deleteFood(id) {
-  delete state.food[id];
-  saveState(); renderFood();
-}
-
-// ===== FLOOR PLAN =====
-const FP_TYPES = {
-  'round-table':  {label:'Round Table',  w:70,  h:70,  bg:'#6baed6', shape:'circle', emoji:'🔵'},
-  'rect-table':   {label:'Long Table',   w:130, h:55,  bg:'#74c476', shape:'rect',   emoji:'⬛'},
-  'chair':        {label:'Chair',        w:30,  h:30,  bg:'#fd8d3c', shape:'circle', emoji:'🪑'},
-  'stage':        {label:'Stage',        w:200, h:80,  bg:'#9e9ac8', shape:'rect',   emoji:'🎭'},
-  'dancefloor':   {label:'Dance Floor',  w:160, h:120, bg:'#f7b6d2', shape:'rect',   emoji:'💃'},
-  'bar':          {label:'Bar',          w:120, h:50,  bg:'#b8965a', shape:'rect',   emoji:'🍹'},
-  'entrance':     {label:'Entrance',     w:80,  h:40,  bg:'#636363', shape:'rect',   emoji:'🚪'},
-  'plant':        {label:'Plant',        w:35,  h:35,  bg:'#7a9e7e', shape:'circle', emoji:'🌿'},
-  'buffet':       {label:'Buffet',       w:150, h:50,  bg:'#b15928', shape:'rect',   emoji:'🍽'},
-  'photo-booth':  {label:'Photo Booth',  w:90,  h:80,  bg:'#e7cb94', shape:'rect',   emoji:'📸'},
-  'gift-table':   {label:'Gift Table',   w:100, h:45,  bg:'#cab2d6', shape:'rect',   emoji:'🎁'},
-  'sweetheart':   {label:'Sweetheart',   w:90,  h:55,  bg:'#e8c5b8', shape:'rect',   emoji:'💑'},
-};
-
-let fpSelected = null;
-let fpDragging = null;
-let fpDragOffset = {x:0, y:0};
-let fpEditingLabel = null;
-
-function renderFloorplan() {
-  const canvas = document.getElementById('floorplan-canvas');
-  canvas.innerHTML = '';
-  fpSelected = null;
-  const items = state.floorplan || {};
-  Object.entries(items).forEach(([id, item]) => {
-    createFPElement(id, item);
-  });
-  updateFPCounts();
-}
-
-function addFPItem(type) {
-  const def = FP_TYPES[type];
-  const canvas = document.getElementById('floorplan-canvas');
-  const rect = canvas.getBoundingClientRect();
-  const id = 'fp'+Date.now();
-  const item = {
-    type, label: def.label,
-    x: Math.random()*(Math.max(rect.width-def.w-20, 50))|0,
-    y: Math.random()*(Math.max(560-def.h-20, 50))|0,
-    w: def.w, h: def.h, rot: 0
-  };
-  if (!state.floorplan) state.floorplan={};
-  state.floorplan[id] = item;
-  saveState();
-  createFPElement(id, item);
-  updateFPCounts();
-}
-
-function createFPElement(id, item) {
-  const def = FP_TYPES[item.type] || FP_TYPES['rect-table'];
-  const el = document.createElement('div');
-  el.className = 'fp-item';
-  el.id = 'fp-'+id;
-  el.style.cssText = `left:${item.x}px;top:${item.y}px;width:${item.w}px;transform:rotate(${item.rot||0}deg);`;
-  const borderR = def.shape==='circle'?'50%':'8px';
-  el.innerHTML = `
-    <div class="fp-controls">
-      <button class="fp-ctrl-btn" onclick="rotateFP('${id}')" title="Rotate">↻</button>
-      <button class="fp-ctrl-btn" onclick="resizeFP('${id}',-10)" title="Smaller">−</button>
-      <button class="fp-ctrl-btn" onclick="resizeFP('${id}',10)" title="Bigger">+</button>
-      <button class="fp-ctrl-btn" onclick="openLabelModal('${id}')" title="Label">✏️</button>
-      <button class="fp-ctrl-btn" style="color:#e07070;" onclick="deleteFPItem('${id}')" title="Delete">✕</button>
-    </div>
-    <div class="fp-item-body" style="width:${item.w}px;height:${item.h}px;background:${def.bg};border-radius:${borderR};opacity:0.85;font-size:${Math.min(item.w,item.h)*0.4}px;flex-shrink:0;">
-      ${def.emoji}
-    </div>
-    <div class="fp-label">${esc(item.label||def.label)}</div>
+  const head = document.createElement('div');
+  head.className = 'section-head';
+  head.innerHTML = `
+    <span class="section-icon">${sec.icon}</span>
+    <span class="section-title">${sec.title}</span>
+    <span class="section-badge" id="sbadge-${uid}">0 / ${sec.items.length}</span>
+    <span class="section-chevron">▾</span>
   `;
-  el.addEventListener('mousedown', (e)=>startDrag(e, id, el));
-  el.addEventListener('touchstart', (e)=>startDragTouch(e, id, el), {passive:false});
-  el.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    selectFP(el);
+  head.addEventListener('click', ()=>div.classList.toggle('collapsed'));
+
+  const bar = document.createElement('div');
+  bar.className = 'section-bar';
+  const bf = document.createElement('div');
+  bf.className = 'section-bar-fill';
+  bf.id = 'sbar-'+uid;
+  bar.appendChild(bf);
+
+  const body = document.createElement('div');
+  body.className = 'section-body';
+
+  sec.items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'item' + (checked[item.id] ? ' checked' : '');
+    row.id = 'item-'+item.id;
+    row.innerHTML = `
+      <div class="item-check"></div>
+      <div class="item-texts">
+        <div class="item-en">${item.en}</div>
+        <div class="item-de">${item.de}</div>
+      </div>
+    `;
+    row.addEventListener('click', ()=>toggleItem(item.id));
+    body.appendChild(row);
   });
-  document.getElementById('floorplan-canvas').appendChild(el);
+
+  div.appendChild(head);
+  div.appendChild(bar);
+  div.appendChild(body);
+  return div;
 }
 
-function selectFP(el) {
-  document.querySelectorAll('.fp-item').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  fpSelected = el;
+function toggleItem(id) {
+  checked[id] = !checked[id];
+  const el = document.getElementById('item-'+id);
+  if (el) el.classList.toggle('checked', checked[id]);
+  updateProgress();
+  saveToFirebase();
 }
 
-function startDrag(e, id, el) {
-  if (e.target.tagName === 'BUTTON') return;
-  e.preventDefault();
-  selectFP(el);
-  const rect = el.getBoundingClientRect();
-  fpDragOffset = {x: e.clientX - rect.left, y: e.clientY - rect.top};
-  fpDragging = {id, el};
-  document.addEventListener('mousemove', onDrag);
-  document.addEventListener('mouseup', stopDrag);
-}
-function startDragTouch(e, id, el) {
-  if (e.target.tagName === 'BUTTON') return;
-  e.preventDefault();
-  selectFP(el);
-  const t = e.touches[0];
-  const rect = el.getBoundingClientRect();
-  fpDragOffset = {x: t.clientX - rect.left, y: t.clientY - rect.top};
-  fpDragging = {id, el};
-  document.addEventListener('touchmove', onDragTouch, {passive:false});
-  document.addEventListener('touchend', stopDrag);
-}
-function onDrag(e) {
-  if (!fpDragging) return;
-  moveFP(e.clientX, e.clientY);
-}
-function onDragTouch(e) {
-  if (!fpDragging) return;
-  e.preventDefault();
-  moveFP(e.touches[0].clientX, e.touches[0].clientY);
-}
-function moveFP(cx, cy) {
-  const canvas = document.getElementById('floorplan-canvas');
-  const cr = canvas.getBoundingClientRect();
-  let x = cx - cr.left - fpDragOffset.x;
-  let y = cy - cr.top - fpDragOffset.y;
-  x = Math.max(0, Math.min(cr.width - fpDragging.el.offsetWidth, x));
-  y = Math.max(0, Math.min(cr.height - fpDragging.el.offsetHeight, y));
-  fpDragging.el.style.left = x+'px';
-  fpDragging.el.style.top = y+'px';
-  state.floorplan[fpDragging.id].x = x;
-  state.floorplan[fpDragging.id].y = y;
-}
-function stopDrag() {
-  if (fpDragging) { saveState(); fpDragging = null; }
-  document.removeEventListener('mousemove', onDrag);
-  document.removeEventListener('mouseup', stopDrag);
-  document.removeEventListener('touchmove', onDragTouch);
-  document.removeEventListener('touchend', stopDrag);
-}
-document.addEventListener('click', e => {
-  if (!e.target.closest('.fp-item')) {
-    document.querySelectorAll('.fp-item').forEach(el=>el.classList.remove('selected'));
-  }
-});
+function renderAll() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
 
-function rotateFP(id) {
-  state.floorplan[id].rot = ((state.floorplan[id].rot||0) + 45) % 360;
-  const el = document.getElementById('fp-'+id);
-  el.style.transform = `rotate(${state.floorplan[id].rot}deg)`;
-  saveState();
+  const h1 = document.createElement('div');
+  h1.className = 'list-heading';
+  h1.innerHTML = 'Original List · Originalliste <span class="lh-tag lh-orig">Mama\'s list</span>';
+  app.appendChild(h1);
+  originalSections.forEach((sec,i) => app.appendChild(buildSection(sec,'o'+i)));
+
+  const h2 = document.createElement('div');
+  h2.className = 'list-heading';
+  h2.innerHTML = 'Recommended Additions · Empfehlungen <span class="lh-tag lh-new">Added for you</span>';
+  app.appendChild(h2);
+  addedSections.forEach((sec,i) => app.appendChild(buildSection(sec,'a'+i)));
+
+  updateProgress();
 }
-function resizeFP(id, delta) {
-  const item = state.floorplan[id];
-  item.w = Math.max(30, (item.w||60)+delta);
-  item.h = Math.max(25, (item.h||50)+delta);
-  saveState();
-  renderFloorplan();
-}
-function deleteFPItem(id) {
-  delete state.floorplan[id];
-  const el = document.getElementById('fp-'+id);
-  if (el) el.remove();
-  saveState();
-  updateFPCounts();
-}
-function openLabelModal(id) {
-  fpEditingLabel = id;
-  document.getElementById('label-item-id').value = id;
-  document.getElementById('label-input').value = state.floorplan[id].label || '';
-  openModal('modal-label');
-}
-function saveLabel() {
-  const id = document.getElementById('label-item-id').value;
-  const lbl = document.getElementById('label-input').value.trim();
-  if (state.floorplan[id]) {
-    state.floorplan[id].label = lbl;
-    saveState();
-    const el = document.getElementById('fp-'+id);
-    if (el) el.querySelector('.fp-label').textContent = lbl;
-  }
-  closeModal('modal-label');
-}
-function clearFloorplan() {
-  if (!confirm('Clear the entire floor plan?')) return;
-  state.floorplan = {};
-  saveState();
-  renderFloorplan();
-}
-function saveFloorplan() {
-  saveState();
-  toast('Floor plan saved! ✓');
-}
-function updateFPCounts() {
-  const items = state.floorplan || {};
-  const counts = {};
-  Object.values(items).forEach(item => {
-    const label = FP_TYPES[item.type]?.label || item.type;
-    counts[label] = (counts[label]||0)+1;
+
+function updateProgress() {
+  const all = [...originalSections, ...addedSections];
+  all.forEach((sec, idx) => {
+    const uid = idx < originalSections.length ? 'o'+idx : 'a'+(idx-originalSections.length);
+    const total = sec.items.length;
+    const done = sec.items.filter(x=>checked[x.id]).length;
+    const badge = document.getElementById('sbadge-'+uid);
+    const bar = document.getElementById('sbar-'+uid);
+    if (badge) { badge.textContent = done+' / '+total; badge.className = 'section-badge'+(done===total?' complete':''); }
+    if (bar) bar.style.width = (total ? Math.round(done/total*100) : 0)+'%';
   });
-  const row = document.getElementById('fp-count-row');
-  row.innerHTML = Object.entries(counts).map(([label,n])=>`
-    <div class="fp-count-card">
-      <div class="fp-count-num">${n}</div>
-      <div class="fp-count-label">${label}</div>
-    </div>
-  `).join('');
+  const allItems = all.flatMap(s=>s.items);
+  const total = allItems.length;
+  const done = allItems.filter(i=>checked[i.id]).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('prog-count').textContent = done+' of '+total+' items';
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('prog-fill').style.width = pct+'%';
+  if (pct===100 && done>0) {
+    document.getElementById('celebrate').classList.add('show');
+    document.getElementById('overlay').classList.add('show');
+  }
 }
 
-// ===== MODAL HELPERS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(mo => {
-  mo.addEventListener('click', e => { if (e.target === mo) mo.classList.remove('open'); });
-});
+function closeCelebrate() {
+  document.getElementById('celebrate').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
 
-// ===== UTILS =====
-function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmt(n) { return Number(n||0).toLocaleString(); }
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 2500);
+// ===== INIT =====
+loadLocal();
+renderAll();
+
+if (window._fbReady) {
+  initFirebase();
+} else {
+  setSyncStatus('','Local mode');
+  document.addEventListener('fb-ready', initFirebase);
 }
 </script>
 </body>
